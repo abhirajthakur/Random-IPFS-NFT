@@ -23,16 +23,6 @@ function NftMinting() {
     msgValue: mintFee,
   });
 
-  useEffect(() => {
-    if (isWeb3Enabled) {
-      async function updateUI() {
-        const _mintFee = await getMintFeeFromContract();
-        setMintFee(_mintFee);
-      }
-      updateUI();
-    }
-  }, [isWeb3Enabled]);
-
   const handleSuccess = async (tx) => {
     await tx.wait(1);
     handleNewNotification(tx);
@@ -46,6 +36,17 @@ function NftMinting() {
       position: "topL",
     });
   };
+
+  const updateUI = async () => {
+    const _mintFee = await getMintFeeFromContract();
+    setMintFee(_mintFee);
+  };
+
+  useEffect(() => {
+    if (isWeb3Enabled) {
+      updateUI();
+    }
+  }, [isWeb3Enabled]);
 
   return (
     <div>
