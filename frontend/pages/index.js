@@ -12,7 +12,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="h-screen justify-between bg-gradient-to-br from-[#141e30] to-[#4568dc] text-white">
+      <div className="h-screen justify-between bg-gradient-to-br from-[#1F2198] to-[#4ADEDE] text-white">
         <Header />
         <NftMinting />
       </div>

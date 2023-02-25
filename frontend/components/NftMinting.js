@@ -52,29 +52,32 @@ function NftMinting() {
   }, [isWeb3Enabled]);
 
   return (
-    <div className="p-5 text-2xl">
+    <div className="p-5 text-3xl">
       {account ? (
         <div>
           <div className="flex justify-center p-3">
             Mint Fee: {ethers.formatEther(mintFee.toString())} ETH
           </div>
-          <div className="flex justify-center p-2">
+          <div className="flex justify-center p-3">
             {isLoading || isFetching ? (
-              <Loading size={45} spinnerColor="#bcd7f0" />
+              <Loading size={55} spinnerColor="white" />
             ) : (
               <Button
-                loadingText="Minting the NFT"
-                color="blue"
                 onClick={async () => {
                   await mintNFT({
                     onSuccess: handleSuccess,
                     onError: (err) => console.error("Error", err),
                   });
                 }}
-                loadingProps={{}}
                 size="large"
+                style={{
+                  font: "inherit",
+                  color: "white",
+                  background:
+                    "linear-gradient(to bottom right, #4ADEDE, #1F2198)",
+                }}
                 text="Mint NFT"
-                theme="outline"
+                theme="custom"
                 disabled={isLoading || isFetching}
               />
             )}
