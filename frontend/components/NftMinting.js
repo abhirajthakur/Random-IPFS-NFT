@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { abi, randomIpfsNFTAddress } from "@/constants";
 import { useMoralis, useWeb3Contract } from "react-moralis";
 import { ethers } from "ethers";
-import { Button } from "@web3uikit/core";
-import { useNotification } from "@web3uikit/core";
+import { Button, useNotification, Loading } from "@web3uikit/core";
 
 function NftMinting() {
   const { isWeb3Enabled, account } = useMoralis();
@@ -16,7 +15,11 @@ function NftMinting() {
     functionName: "getMintFee",
   });
 
-  const { runContractFunction: mintNFT } = useWeb3Contract({
+  const {
+    runContractFunction: mintNFT,
+    isLoading,
+    isFetching,
+  } = useWeb3Contract({
     abi: abi,
     contractAddress: randomIpfsNFTAddress,
     functionName: "requestNft",
@@ -37,38 +40,50 @@ function NftMinting() {
     });
   };
 
-  const updateUI = async () => {
+  const updateMintFee = async () => {
     const _mintFee = await getMintFeeFromContract();
     setMintFee(_mintFee);
   };
 
   useEffect(() => {
     if (isWeb3Enabled) {
-      updateUI();
+      updateMintFee();
     }
   }, [isWeb3Enabled]);
 
   return (
-    <div>
+    <div className="p-5 text-2xl">
       {account ? (
         <div>
-          Mint Fee: {ethers.formatEther(mintFee.toString())} ETH
-          <Button
-            loadingText="Minting the NFT"
-            color="blue"
-            onClick={async () => {
-              await mintNFT({
-                onSuccess: handleSuccess,
-                onError: (err) => console.error("Error", err),
-              });
-            }}
-            size="large"
-            text="Mint NFT"
-            theme="outline"
-          />
+          <div className="flex justify-center p-3">
+            Mint Fee: {ethers.formatEther(mintFee.toString())} ETH
+          </div>
+          <div className="flex justify-center p-2">
+            {isLoading || isFetching ? (
+              <Loading size={45} spinnerColor="#bcd7f0" />
+            ) : (
+              <Button
+                loadingText="Minting the NFT"
+                color="blue"
+                onClick={async () => {
+                  await mintNFT({
+                    onSuccess: handleSuccess,
+                    onError: (err) => console.error("Error", err),
+                  });
+                }}
+                loadingProps={{}}
+                size="large"
+                text="Mint NFT"
+                theme="outline"
+                disabled={isLoading || isFetching}
+              />
+            )}
+          </div>
         </div>
       ) : (
-        <div>Please Connect your wallet</div>
+        <div className="flex justify-center text-3xl">
+          Please connect your wallet
+        </div>
       )}
     </div>
   );
