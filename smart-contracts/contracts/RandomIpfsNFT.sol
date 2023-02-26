@@ -33,7 +33,7 @@ contract RandomIpfsNFT is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
     // NFT variables
     using Counters for Counters.Counter;
     Counters.Counter private s_tokenId;
-    uint256 internal constant MAX_CHANCE_VALUE = 60;
+    uint256 internal constant MAX_CHANCE_VALUE = 100;
     uint256 internal immutable i_mintFee;
     string[] internal s_carTokenUris;
 

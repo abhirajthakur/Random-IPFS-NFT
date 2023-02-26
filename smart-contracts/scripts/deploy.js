@@ -1,4 +1,4 @@
-const { ethers, network, run } = require("hardhat");
+const { ethers, network } = require("hardhat");
 const { developmentChains, networkConfig } = require("../helper.hardhat.config");
 const { verify } = require("../utils/verify");
 const fs = require("fs");
@@ -57,7 +57,7 @@ async function main() {
         await verify(randomIpfsNFT.address, args);
 
         const textToappend = `RandomIpfsNFT address: ${randomIpfsNFT.address}\n`;
-        fs.appendFileSync("./address.txt", textToappend);
+        fs.writeFileSync("./address.txt", textToappend);
     }
 };
 
