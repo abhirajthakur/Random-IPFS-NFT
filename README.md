@@ -7,4 +7,4 @@ This project has 2 folders:
 
 This application basically mints a NFT (Non Fungible Token) from random of 3 images to the user address. User has to pay `mint price + gas fee` to mint the NFT. This currently works only on Goerli testnet.
 
-You can also see the transactions and deployed smart contract [here](https://goerli.etherscan.io/address/0x43158ACC8E43b851ABA84881275De3050611030c).
+You can also see the transactions and deployed smart contract [here](https://goerli.etherscan.io/address/0x31849D0F5Ac736cA4386245A42eD54F694dBc379).
