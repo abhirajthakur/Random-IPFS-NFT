@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { abi, randomIpfsNFTAddress } from "@/constants";
-import { useMoralis, useWeb3Contract } from "react-moralis";
+import { useMoralis, useWeb3Contract, useChain } from "react-moralis";
 import { ethers } from "ethers";
 import { Button, useNotification, Loading } from "@web3uikit/core";
 
 function NftMinting() {
-  const { isWeb3Enabled, account, chainId } = useMoralis();
+  const { isWeb3Enabled, account } = useMoralis();
+  const { switchNetwork, chainId } = useChain();
   const [mintFee, setMintFee] = useState(0);
   const dispatch = useNotification();
 
@@ -31,6 +32,12 @@ function NftMinting() {
     handleNewNotification(tx);
   };
 
+  const handleNetworkChange = async () => {
+    if (chainId !== "0x5") {
+      switchNetwork("0x5");
+    }
+  };
+
   const handleNewNotification = () => {
     dispatch({
       type: "success",
@@ -41,32 +48,24 @@ function NftMinting() {
   };
 
   const updateMintFee = async () => {
-    try {
-      if (chainId != '0x5') {
-        await window.ethereum.request({
-          method: "wallet_switchEthereumChain",
-          params: [{ chainId: "0x5" }], // chainId must be in HEX with 0x in front
-        });
-      }
-      const _mintFee = await getMintFeeFromContract();
-      setMintFee(_mintFee);
-    } catch (err) {
-      console.log(err);
-    }
+    await handleNetworkChange();
+    const _mintFee = await getMintFeeFromContract();
+    setMintFee(_mintFee);
   };
 
   useEffect(() => {
     if (isWeb3Enabled) {
       updateMintFee();
     }
-  }, [isWeb3Enabled]);
+  }, [isWeb3Enabled, chainId]);
 
   return (
     <div className="p-5 text-3xl">
-      {account && chainId == '0x5' ? (
+      {account && chainId == "0x5" ? (
         <div>
           <div className="flex justify-center p-3">
-            Mint Fee: {ethers.formatEther(mintFee.toString())} ETH
+            Mint Fee:
+            {mintFee && ethers.formatEther(mintFee.toString()) + " ETH"}
           </div>
           <div className="flex justify-center p-3">
             {isLoading || isFetching ? (
@@ -74,6 +73,7 @@ function NftMinting() {
             ) : (
               <Button
                 onClick={async () => {
+                  await handleNetworkChange();
                   await mintNFT({
                     onSuccess: handleSuccess,
                     onError: (err) => console.error("Error", err),
@@ -97,9 +97,10 @@ function NftMinting() {
         <div className="flex justify-center text-3xl">
           Please connect your wallet
         </div>
-
       ) : (
-        <div className="flex justify-center text-3xl">Please change network to Goerli</div>
+        <div className="flex flex-col items-center">
+          <p className="text-3xl">Please change network to Goerli</p>
+        </div>
       )}
     </div>
   );
